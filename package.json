@@ -12,6 +12,7 @@
     "cf:typegen": "npm run cf:typegen --workspace @flowpay/api",
     "db:migrate:local": "npm run db:migrate:local --workspace @flowpay/api",
     "db:seed:local": "npm run db:seed:local --workspace @flowpay/api",
+    "deploy": "node scripts/deploy.mjs",
     "deploy:check": "npm run deploy:check --workspace @flowpay/api",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

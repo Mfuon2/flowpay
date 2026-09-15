@@ -7,15 +7,18 @@ Use separate Cloudflare D1 databases, queues/DLQs, Access applications, and Circ
 ## Build and data
 
 - `npm ci`
-- `npm run validate`
+- run `npm run deploy` and explicitly select `simulation` or `circle-wallets`;
+- the deployment preflight lists encrypted bindings on the `flowpay-api` Worker and invokes `wrangler secret put` for every missing requirement;
+- enter sensitive values only into Wrangler's protected interactive prompt, never into command arguments, source files, or chat;
+- the script runs `npm run validate`, applies remote D1 migrations, and deploys only after the required Cloudflare bindings exist;
 - review every unapplied D1 migration and back up material data;
-- apply migrations to the explicit target environment;
 - seed Metro Auto Works only in an isolated demo environment;
 - run the health endpoint and authenticated tenant smoke tests.
 
 ## Access and authorization
 
 - Configure `TEAM_DOMAIN` and `POLICY_AUD` for the exact Cloudflare Access application.
+- `TEAM_DOMAIN` identifies the Zero Trust account issuer and public signing-key endpoint; `POLICY_AUD` binds accepted JWTs to this specific FlowPay Access application.
 - Verify unauthenticated `/api/v1/*` requests fail closed.
 - Verify active membership, tenant selection, finance/manager roles, and maker-checker behavior with separate accounts.
 - Confirm the public route is protected before sharing its URL.
@@ -31,7 +34,7 @@ Set `FLOWPAY_PROVIDER=simulation` and an approved `FLOWPAY_SIMULATION_BEHAVIOR`.
 Re-open current official Circle/Arc documentation before configuration.
 
 - Set `FLOWPAY_PROVIDER=circle-wallets` as a non-secret environment variable.
-- Store `CIRCLE_API_KEY` and `CIRCLE_ENTITY_SECRET` with Cloudflare secret bindings.
+- The deployment script passes the selected non-sensitive provider switch and stores `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`, and `CIRCLE_USDC_TOKEN_ID` as encrypted Cloudflare bindings.
 - Set `CIRCLE_USDC_TOKEN_ID` to Circle's current Arc Testnet USDC token UUID, not the contract address.
 - Keep `CIRCLE_API_BASE_URL` unset unless an approved Circle-compatible test endpoint is intentionally used.
 - Configure active provider sources with Circle wallet UUIDs and participant destinations with Arc Testnet addresses.
