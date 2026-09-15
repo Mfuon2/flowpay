@@ -8,6 +8,9 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["flowpay-mark.svg"],
+      workbox: {
+        navigateFallbackDenylist: [/^\/api\//, /^\/cdn-cgi\//],
+      },
       manifest: {
         name: "QeSuite FlowPay",
         short_name: "FlowPay",
