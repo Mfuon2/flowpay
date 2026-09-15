@@ -62,9 +62,8 @@ Implementation evidence proves the current official SDK request shape through a 
 5. Confirm actual Circle account eligibility for the SCA batch and Circle Mint sandbox alternatives, or explicitly record why they are unavailable and retain ADR-016.
 6. Replay the live event/request path and prove that no duplicate provider transfer or journal is created.
 7. Run the deployment and three-minute demo rehearsal checklists with named reviewers and capture results.
-8. Push the initial Git commit and retain a successful GitHub Actions validation run.
 
-Until all eight gates have evidence, the active “complete all milestones” goal must remain incomplete.
+Until all seven gates have evidence, the active “complete all milestones” goal must remain incomplete.
 
 ## Cloudflare deployment evidence
 
@@ -79,3 +78,4 @@ Until all eight gates have evidence, the active “complete all milestones” go
 - Smoke tests: `/` = 200, `/api/health` = 200 with D1 healthy, `/api/v1/dashboard` = 401 when an organisation is supplied without an Access JWT
 - Deployment bundle: 632.66 KiB (121.12 KiB gzip); Cloudflare reported 10 ms startup
 - Local startup profile: 11.4 ms active startup after the final provider/configuration build
+- Source/CI: initial `main` commit `96bda25`; GitHub Actions run `34942077470` passed the full validation gate in 1m01s

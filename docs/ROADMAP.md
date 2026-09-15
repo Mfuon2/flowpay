@@ -149,7 +149,7 @@ Exit: domain contracts are vendor/vertical independent; financial calculation/st
 - Complete: finance-only unknown-submission recovery UI preserves the no-blind-retry control and requires provider non-submission evidence.
 - Complete: isolated deterministic Metro seed and simulation success, retryable, terminal, pending, duplicate, and ambiguous outcome coverage.
 - Complete: deployment checklist, incident/recovery runbook, three-minute demo script, rehearsal matrix, simulation fallback, and explicit testnet disclosure.
-- Complete: least-privilege GitHub Actions validation runs the pinned install and full repository gate on main pushes and pull requests.
+- Complete: least-privilege GitHub Actions validation runs the pinned install and full repository gate on main pushes and pull requests; initial run `34942077470` passed in 1m01s.
 - Complete: final Worker startup profiling measured a 632.66 KiB bundle (121.12 KiB gzip) and 11.4 ms active local startup time; Cloudflare reported 10 ms for the deployed Worker.
 - Complete: isolated `flowpay` D1, `flowpay-events`, `flowpay-events-dlq`, and `flowpay-api` resources are live; all 24 migrations, an idempotent two-pass demo seed, public health/PWA smoke tests, and unauthenticated API rejection are verified.
 - Pending external setup: configure the exact Cloudflare Access application and enrolled D1 identities, provide Circle test credentials and wallet/token mappings, perform and record the selected Arc Testnet low-value happy path, then execute the rehearsal checklist.
