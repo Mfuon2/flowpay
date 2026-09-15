@@ -1,0 +1,19 @@
+{
+  "name": "QeSuite FlowPay Proposal-First Codex Handoff",
+  "version": "2.0.0",
+  "architecture_status": "UNDECIDED",
+  "purpose": "Define hackathon concept and make Codex inspect QeSuite before proposing architecture",
+  "first_codex_prompt": "codex-prompts/00_DISCOVER_AND_DESIGN_ARCHITECTURE.md",
+  "files": [
+    "AGENTS.md",
+    "README_FOR_HANDOFF.txt",
+    "START_HERE.md",
+    "codex-prompts/00_DISCOVER_AND_DESIGN_ARCHITECTURE.md",
+    "codex-prompts/01_AFTER_ARCHITECTURE_APPROVAL.md",
+    "docs/ARCHITECTURE_DECISION_TEMPLATE.md",
+    "docs/DEMO_SCENARIO.md",
+    "docs/HACKATHON_PROPOSAL.md",
+    "docs/OPEN_ARCHITECTURE_QUESTIONS.md",
+    "docs/PRODUCT_REQUIREMENTS.md"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "qesuite-flowpay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @flowpay/web && npm run build --workspace @flowpay/api",
+    "cf:typegen": "npm run cf:typegen --workspace @flowpay/api",
+    "db:migrate:local": "npm run db:migrate:local --workspace @flowpay/api",
+    "db:seed:local": "npm run db:seed:local --workspace @flowpay/api",
+    "deploy:check": "npm run deploy:check --workspace @flowpay/api",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "vitest run --config vitest.config.ts && vitest run --config apps/api/vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "typecheck": "tsc --noEmit -p packages/domain/tsconfig.json && tsc --noEmit -p packages/accounting/tsconfig.json && tsc --noEmit -p packages/provider-contract/tsconfig.json && tsc --noEmit -p packages/provider-simulation/tsconfig.json && tsc --noEmit -p packages/provider-circle-wallets/tsconfig.json && tsc --noEmit -p apps/api/tsconfig.json && tsc --noEmit -p apps/web/tsconfig.json",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build --workspace @flowpay/web && npm run deploy:check"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "1.1.8",
+    "@eslint/js": "10.0.1",
+    "@types/node": "26.5.1",
+    "eslint": "10.10.0",
+    "prettier": "3.6.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "4.1.11",
+    "wrangler": "4.131.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "workerd@1.20260911.1": true
+  }
+}

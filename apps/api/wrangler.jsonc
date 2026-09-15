@@ -1,0 +1,57 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "flowpay-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "FLOWPAY_PROVIDER": "simulation",
+    "FLOWPAY_SIMULATION_BEHAVIOR": "CONFIRMED",
+  },
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 0.1,
+    },
+  },
+  "triggers": {
+    "crons": ["*/1 * * * *"],
+  },
+  "queues": {
+    "producers": [
+      {
+        "binding": "FLOWPAY_EVENTS",
+        "queue": "flowpay-events",
+      },
+    ],
+    "consumers": [
+      {
+        "queue": "flowpay-events",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "retry_delay": 30,
+        "dead_letter_queue": "flowpay-events-dlq",
+      },
+    ],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "flowpay",
+      "database_id": "b28a6d0f-6bdd-467f-90b0-894c570974e7",
+      "migrations_dir": "migrations",
+    },
+  ],
+}

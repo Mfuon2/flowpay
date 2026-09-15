@@ -1,0 +1,12 @@
+{
+  "name": "@flowpay/provider-contract",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@flowpay/domain": "0.1.0"
+  }
+}

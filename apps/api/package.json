@@ -1,0 +1,21 @@
+{
+  "name": "@flowpay/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "cf:typegen": "wrangler types worker-configuration.d.ts",
+    "db:migrate:local": "wrangler d1 migrations apply flowpay --local",
+    "db:seed:local": "wrangler d1 execute flowpay --local --file seeds/metro-auto-works.sql",
+    "deploy:check": "wrangler deploy --dry-run --outdir dist"
+  },
+  "dependencies": {
+    "@flowpay/accounting": "0.1.0",
+    "@flowpay/domain": "0.1.0",
+    "@flowpay/provider-circle-wallets": "^0.1.0",
+    "@flowpay/provider-contract": "0.1.0",
+    "@flowpay/provider-simulation": "0.1.0",
+    "jose": "6.2.12"
+  }
+}

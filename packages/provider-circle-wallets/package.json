@@ -1,0 +1,13 @@
+{
+  "name": "@flowpay/provider-circle-wallets",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@circle-fin/developer-controlled-wallets": "10.8.0",
+    "@flowpay/provider-contract": "0.1.0"
+  }
+}
