@@ -1,8 +1,10 @@
 import {
   AuthenticationError,
   AuthorizationError,
+  authenticateAccessIdentity,
   authenticateOrganisationRequest,
   requireAnyRole,
+  type AccessIdentity,
   type AuthenticatedPrincipal,
 } from "../auth/access-auth.ts";
 import { confirmPayment } from "../business/confirm-payment.ts";
@@ -52,8 +54,19 @@ export async function handleApiRequest(
   request: Request,
   env: Env,
   authenticate: OrganisationAuthenticator = authenticateOrganisationRequest,
+  identify: AccessIdentityAuthenticator = authenticateAccessIdentity,
 ): Promise<Response | null> {
   const url = new URL(request.url);
+  if (request.method === "GET" && url.pathname === "/api/auth/identity") {
+    try {
+      const identity = await identify(request, env);
+      return json({
+        identity: { email: identity.email, subject: identity.subject },
+      });
+    } catch (error) {
+      return apiError(error);
+    }
+  }
   if (!url.pathname.startsWith("/api/v1/")) return null;
   try {
     const principal = await authenticate(request, env);
@@ -67,6 +80,11 @@ export type OrganisationAuthenticator = (
   request: Request,
   env: Env,
 ) => Promise<AuthenticatedPrincipal>;
+
+export type AccessIdentityAuthenticator = (
+  request: Request,
+  env: Env,
+) => Promise<AccessIdentity>;
 
 async function routeAuthenticatedRequest(
   request: Request,

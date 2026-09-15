@@ -15,6 +15,11 @@ export type AuthenticatedPrincipal = Readonly<{
   roles: readonly OrganisationRole[];
 }>;
 
+export type AccessIdentity = Readonly<{
+  subject: string;
+  email: string;
+}>;
+
 export const ORGANISATION_ROLES = [
   "OWNER",
   "ADMIN",
@@ -57,22 +62,7 @@ export async function authenticateOrganisationRequest(
   if (!organisationId) {
     throw new AuthorizationError("An organisation selection is required.");
   }
-  const token = request.headers.get("cf-access-jwt-assertion");
-  if (!token) {
-    throw new AuthenticationError(
-      "Cloudflare Access authentication is required.",
-    );
-  }
-  const configuration = accessConfiguration(env);
-  const payload = await verifyAccessJwt(token, configuration, keyResolver);
-  if (typeof payload.sub !== "string" || payload.sub.length === 0) {
-    throw new AuthenticationError("Access token has no subject identity.");
-  }
-  const email =
-    typeof payload.email === "string" ? payload.email.toLowerCase() : null;
-  if (!email) {
-    throw new AuthenticationError("Access token has no email identity.");
-  }
+  const identity = await authenticateAccessIdentity(request, env, keyResolver);
   const rows = await env.DB.prepare(
     `SELECT u.id AS user_id, u.access_subject, u.email,
             om.id AS membership_id, omr.role
@@ -84,7 +74,7 @@ export async function authenticateOrganisationRequest(
        AND om.status = 'ACTIVE'
      ORDER BY omr.role`,
   )
-    .bind(payload.sub, email, organisationId)
+    .bind(identity.subject, identity.email, organisationId)
     .all<MembershipRow>();
   const first = rows.results[0];
   if (!first) {
@@ -101,6 +91,30 @@ export async function authenticateOrganisationRequest(
     membershipId: first.membership_id,
     roles,
   };
+}
+
+export async function authenticateAccessIdentity(
+  request: Request,
+  env: Env,
+  keyResolver?: JWTVerifyGetKey,
+): Promise<AccessIdentity> {
+  const token = request.headers.get("cf-access-jwt-assertion");
+  if (!token) {
+    throw new AuthenticationError(
+      "Cloudflare Access authentication is required.",
+    );
+  }
+  const configuration = accessConfiguration(env);
+  const payload = await verifyAccessJwt(token, configuration, keyResolver);
+  if (typeof payload.sub !== "string" || payload.sub.length === 0) {
+    throw new AuthenticationError("Access token has no subject identity.");
+  }
+  const email =
+    typeof payload.email === "string" ? payload.email.toLowerCase() : null;
+  if (!email) {
+    throw new AuthenticationError("Access token has no email identity.");
+  }
+  return { subject: payload.sub, email };
 }
 
 export async function verifyAccessJwt(

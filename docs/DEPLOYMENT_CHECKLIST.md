@@ -19,6 +19,7 @@ Use separate Cloudflare D1 databases, queues/DLQs, Access applications, and Circ
 
 - Configure `TEAM_DOMAIN` and `POLICY_AUD` for the exact Cloudflare Access application.
 - `TEAM_DOMAIN` identifies the Zero Trust account issuer and public signing-key endpoint; `POLICY_AUD` binds accepted JWTs to this specific FlowPay Access application.
+- Before provisioning an application membership, open `/api/auth/identity` through the protected Worker and retain only the verified `identity.email` and `identity.subject`; the endpoint never returns the Access JWT or cookies.
 - Verify unauthenticated `/api/v1/*` requests fail closed.
 - Verify active membership, tenant selection, finance/manager roles, and maker-checker behavior with separate accounts.
 - Confirm the public route is protected before sharing its URL.

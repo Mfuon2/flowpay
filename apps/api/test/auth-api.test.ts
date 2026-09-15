@@ -11,6 +11,7 @@ import { describe, expect, it } from "vitest";
 import {
   AuthenticationError,
   AuthorizationError,
+  authenticateAccessIdentity,
   authenticateOrganisationRequest,
   type AuthenticatedPrincipal,
 } from "../src/auth/access-auth.ts";
@@ -77,6 +78,19 @@ async function accessFixture(suffix: string) {
 }
 
 describe("Cloudflare Access authentication", () => {
+  it("verifies an identity before application membership is provisioned", async () => {
+    const fixture = await accessFixture("identity");
+    const request = new Request("https://flowpay.test/api/auth/identity", {
+      headers: { "cf-access-jwt-assertion": fixture.token },
+    });
+    await expect(
+      authenticateAccessIdentity(request, fixture.authEnv, fixture.keyResolver),
+    ).resolves.toEqual({
+      subject: fixture.subject,
+      email: fixture.email,
+    });
+  });
+
   it("verifies signature, issuer, audience, identity, membership, and roles", async () => {
     const fixture = await accessFixture("valid");
     const request = new Request("https://flowpay.test/api/v1/me", {
@@ -133,6 +147,27 @@ describe("Cloudflare Access authentication", () => {
 });
 
 describe("authenticated API", () => {
+  it("returns only the verified bootstrap identity without a tenant selection", async () => {
+    const response = await handleApiRequest(
+      new Request("https://flowpay.test/api/auth/identity"),
+      env,
+      authenticateOrganisationRequest,
+      () =>
+        Promise.resolve({
+          subject: "access-subject-bootstrap",
+          email: "bootstrap@example.com",
+        }),
+    );
+    expect(response?.status).toBe(200);
+    expect(response?.headers.get("cache-control")).toBe("no-store");
+    await expect(response?.json()).resolves.toEqual({
+      identity: {
+        subject: "access-subject-bootstrap",
+        email: "bootstrap@example.com",
+      },
+    });
+  });
+
   it("requires Access authentication on every v1 route", async () => {
     const response = await handleApiRequest(
       new Request("https://flowpay.test/api/v1/dashboard", {
